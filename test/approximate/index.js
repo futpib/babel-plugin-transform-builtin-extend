@@ -53,4 +53,32 @@ describe('approximate extension', function(){
             expect(a.otherMessage).to.eql('a message');
         });
     });
+
+    describe('Function', function(){
+        class MyFunction extends Function {
+            constructor() {
+                super('return arguments.callee.apply(this, arguments);');
+            }
+
+            apply(thisArg, args) {
+                return args[0] + 1;
+            }
+        }
+
+        it('should behave properly', function(){
+            const f = new MyFunction();
+
+            expect(f instanceof MyFunction).to.be.true;
+            expect(f instanceof Function).to.be.true;
+
+            expect(typeof f).to.eql('function');
+
+            expect(f).to.have.property('call');
+            expect(f).to.have.property('apply');
+
+            expect(f(1)).to.eql(2);
+            expect(f.call(null, 2)).to.eql(3);
+            expect(f.apply(null, [3])).to.eql(4);
+        });
+    });
 });
